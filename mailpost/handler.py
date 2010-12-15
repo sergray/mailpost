@@ -64,7 +64,7 @@ class Mapper(object):
             rule.update(msg_rule)
             match_func = fnmatch.fnmatch
             if rule['syntax'] == 'regexp':
-                match_func = re.match
+                match_func = lambda string, pattern: re.match(pattern, string)
             match = True
             for key, pattern in rule['conditions'].items():
                 value = message.get(key, None)
@@ -74,9 +74,9 @@ class Mapper(object):
                     match = False
                     break
                 if type(pattern) in [list, tuple]:
-                    match &= any([match_func(value, item) for item in pattern])
+                    match &= any([bool(match_func(value, item)) for item in pattern])
                 elif isinstance(pattern, str):
-                    match &= match_func(value, pattern)
+                    match &= bool(match_func(value, pattern))
                 else:
                     raise ConfigurationError(\
                                 "Pattern should be string or list, not %s" %\
