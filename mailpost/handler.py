@@ -64,7 +64,7 @@ class Mapper(object):
             rule.update(msg_rule)
             match_func = fnmatch.fnmatch
             if rule['syntax'] == 'regexp':
-                mathc_func = re.match
+                match_func = re.match
             match = True
             for key, pattern in rule['conditions'].items():
                 value = message.get(key, None)
